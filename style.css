@@ -53,7 +53,6 @@ header {
     padding: 0 1rem; /* حذف فاصله از بالا */
 }
 
-/* --- این بخش مهم‌ترین تغییرات را دارد --- */
 .category-title {
     /* هدر چسبان */
     position: sticky;
@@ -145,12 +144,24 @@ footer {
         padding-right: 1.5rem;
     }
 
+    /* --- تغییر اصلی اینجاست --- */
     #category-filters {
-        padding: 0.5rem;
+        padding: 0.5rem 1rem; /* کمی پدینگ افقی برای زیبایی */
+        flex-wrap: nowrap; /* جلوگیری از شکستن و رفتن به خط بعد */
+        overflow-x: auto; /* فعال کردن اسکرول افقی */
+        justify-content: flex-start; /* چینش دکمه‌ها از ابتدا */
+        -ms-overflow-style: none;  /* مخفی کردن اسکرول بار در IE و Edge */
+        scrollbar-width: none;  /* مخفی کردن اسکرول بار در Firefox */
     }
+    /* مخفی کردن اسکرول بار در Chrome, Safari و Opera */
+    #category-filters::-webkit-scrollbar {
+        display: none;
+    }
+    /* --- پایان تغییر اصلی --- */
 
     .filter-btn {
         padding: 8px 15px;
         font-size: 0.9rem;
+        flex-shrink: 0; /* جلوگیری از کوچک شدن دکمه‌ها */
     }
 }
