@@ -3,7 +3,6 @@ body {
     background-color: #f4f4f4;
     color: #333;
     margin: 0;
-    padding: 0;
 }
 
 header {
@@ -13,14 +12,41 @@ header {
     padding: 1rem 0;
 }
 
-#menu-container {
-    max-width: 900px;
-    margin: 2rem auto;
+/* استایل بخش فیلترها */
+#category-filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     padding: 1rem;
+    background-color: #ecf0f1;
 }
 
-.category-section {
-    margin-bottom: 3rem;
+.filter-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.filter-btn:hover {
+    background-color: #2980b9;
+}
+
+.filter-btn.active {
+    background-color: #c0392b;
+    font-weight: bold;
+}
+
+#menu-container {
+    max-width: 900px;
+    margin: 1rem auto;
+    padding: 1rem;
 }
 
 .category-title {
@@ -29,6 +55,7 @@ header {
     border-bottom: 2px solid #c0392b;
     padding-bottom: 0.5rem;
     margin-bottom: 1.5rem;
+    margin-top: 1rem;
 }
 
 .menu-item {
@@ -45,6 +72,7 @@ header {
     width: 120px;
     height: 120px;
     object-fit: cover;
+    flex-shrink: 0;
 }
 
 .item-details {
@@ -68,12 +96,40 @@ header {
     text-align: center;
     font-size: 1.5rem;
     padding: 3rem;
+    color: #7f8c8d;
 }
 
 footer {
     text-align: center;
     padding: 1rem;
     margin-top: 2rem;
-    background-color: #ecf0f1;
-    color: #7f8c8d;
+    background-color: #333;
+    color: #ccc;
+}
+
+/* کدهای واکنش‌گرا برای موبایل */
+@media (max-width: 768px) {
+    .menu-item {
+        flex-direction: column; /* آیتم‌ها زیر هم قرار می‌گیرند */
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .item-image {
+        width: 100%; /* عکس تمام عرض را می‌گیرد */
+        height: 180px;
+    }
+
+    .category-title {
+        font-size: 1.5rem;
+    }
+
+    #category-filters {
+        padding: 0.5rem;
+    }
+
+    .filter-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
 }
