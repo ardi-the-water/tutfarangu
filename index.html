@@ -5,14 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منوی دیجیتال کافه</title>
     <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h1>نام کافه یا رستوران شما</h1>
-        <p>خوش آمدید!</p>
+        <div id="header-content">
+            <div id="logo-container"></div>
+            <h1 id="cafe-name">نام کافه یا رستوران شما</h1>
+            <p id="welcome-message">خوش آمدید!</p>
+        </div>
     </header>
 
     <div id="category-filters">
@@ -23,9 +27,11 @@
     </main>
 
     <footer>
-        <p>طراحی و توسعه توسط علی خداکرمی</p>
+        <p id="developer-credit">طراحی و توسعه توسط علی خداکرمی</p>
     </footer>
 
     <script src="script.js"></script>
+
+    <button id="scrollTopBtn" title="برو به بالا">▲</button>
 </body>
 </html>
