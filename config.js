@@ -27,6 +27,14 @@ const CAFE_CONFIG = {
     currency: "تومان",          // واحد پول
     showImages: true,           // نمایش تصاویر آیتم‌ها
     showDescription: true,      // نمایش توضیحات آیتم‌ها
+
+    // ═══ تنظیمات فونت ═══
+    // برای استفاده از فونت محلی، فایل فونت را در پوشه assets/fonts قرار دهید
+    // و نام خانواده و مسیر فایل را در اینجا مشخص کنید.
+    font: {
+        fontFamily: "SGKara-Regular", // نام خانواده فونت که در CSS استفاده می‌شود
+        fontFile: "assets/fonts/SGKara-Regular.ttf" // مسیر فایل فونت
+    },
     
     // ═══ اطلاعات توسعه‌دهنده ═══
     developer: {

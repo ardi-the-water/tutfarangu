@@ -36,6 +36,37 @@ function applyConfigSettings() {
     
     // اعمال رنگ‌ها
     applyColors();
+
+    // اعمال فونت
+    applyFont();
+}
+
+// تابع اعمال فونت از کانفیگ
+function applyFont() {
+    if (CAFE_CONFIG.font && CAFE_CONFIG.font.fontFamily && CAFE_CONFIG.font.fontFile) {
+        const { fontFamily, fontFile } = CAFE_CONFIG.font;
+
+        // استخراج فرمت فونت از نام فایل
+        const format = fontFile.split('.').pop().toLowerCase();
+        let fontFormat = format;
+        if (format === 'ttf') fontFormat = 'truetype';
+        if (format === 'otf') fontFormat = 'opentype';
+
+        // ایجاد استایل داینامیک برای @font-face
+        const style = document.createElement('style');
+        style.textContent = `
+            @font-face {
+                font-family: '${fontFamily}';
+                src: url('${fontFile}') format('${fontFormat}');
+                font-weight: normal;
+                font-style: normal;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // اعمال فونت به کل صفحه
+        document.body.style.fontFamily = `'${fontFamily}', sans-serif`;
+    }
 }
 
 // تابع اعمال رنگ‌ها و تولید شیدهای هوشمند
