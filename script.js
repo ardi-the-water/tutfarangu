@@ -247,28 +247,44 @@ function filterAndDisplayMenu() {
 }
 
 // تابع برای نمایش آیتم‌های منو در صفحه (بهینه‌سازی شده با DocumentFragment)
-// تابع انیمیشن FLIP برای تغییرات نرم در منو
+// تابع انیمیشن FLIP پیشرفته برای تغییرات نرم در منو و ارتفاع کانتینر
 function animateMenuChange(updateFunction) {
+    const firstHeight = menuContainer.offsetHeight;
+    
+    // 1. First: خواندن موقعیت اولیه آیتم‌ها
     const firstRects = new Map();
     const children = Array.from(menuContainer.children);
     children.forEach(child => {
-        firstRects.set(child, child.getBoundingClientRect());
+        if (child.classList.contains('menu-item')) {
+            firstRects.set(child, child.getBoundingClientRect());
+        }
     });
 
-    // اجرای تغییرات (مانند فیلتر کردن یا تغییر ویو)
+    // انیمیت کردن ارتفاع کانتینر
+    menuContainer.style.height = `${firstHeight}px`;
+    
+    // 2. اجرای تغییرات در DOM (فیلتر، تغییر ویو و...)
     updateFunction();
 
+    const lastHeight = menuContainer.scrollHeight; // ارتفاع واقعی محتوای جدید
+
+    // 3. Last: خواندن موقعیت نهایی آیتم‌ها
     const lastRects = new Map();
     const newChildren = Array.from(menuContainer.children);
     newChildren.forEach(child => {
-        lastRects.set(child, child.getBoundingClientRect());
+        if (child.classList.contains('menu-item')) {
+            lastRects.set(child, child.getBoundingClientRect());
+        }
     });
 
+    // 4. Invert & Play: اعمال انیمیشن
     newChildren.forEach(child => {
+        if (!child.classList.contains('menu-item')) return;
+
         const first = firstRects.get(child);
         const last = lastRects.get(child);
 
-        if (first) { // اگر عنصر از قبل وجود داشته
+        if (first) { // اگر عنصر از قبل وجود داشته (انیمیشن حرکت)
             const deltaX = first.left - last.left;
             const deltaY = first.top - last.top;
             const deltaW = first.width / last.width;
@@ -277,24 +293,31 @@ function animateMenuChange(updateFunction) {
             child.style.transition = 'none';
             child.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${deltaW}, ${deltaH})`;
             child.style.transformOrigin = 'top left';
-
-            // برای اجرای انیمیشن
-            requestAnimationFrame(() => {
-                child.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-                child.style.transform = '';
-            });
-        } else { // اگر عنصر جدید است
+        } else { // اگر عنصر جدید است (انیمیشن ورود)
             child.style.transition = 'none';
             child.style.opacity = '0';
-            child.style.transform = 'translateY(20px)';
-            
-            requestAnimationFrame(() => {
-                child.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-                child.style.opacity = '1';
-                child.style.transform = '';
-            });
+            child.style.transform = 'translateY(30px)';
         }
     });
+
+    // اجرای انیمیشن در فریم بعدی
+    requestAnimationFrame(() => {
+        menuContainer.style.transition = 'height 0.4s ease';
+        menuContainer.style.height = `${lastHeight}px`;
+
+        newChildren.forEach(child => {
+            if (!child.classList.contains('menu-item')) return;
+            child.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+            child.style.transform = '';
+            child.style.opacity = '1';
+        });
+    });
+
+    // پاک کردن ارتفاع استایل شده بعد از اتمام انیمیشن
+    setTimeout(() => {
+        menuContainer.style.transition = '';
+        menuContainer.style.height = '';
+    }, 400);
 }
 
 // تابع برای نمایش آیتم‌های منو در صفحه (بهینه‌سازی شده با DocumentFragment)

@@ -86,6 +86,7 @@ header {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     transition: border-color 0.3s, box-shadow 0.3s;
     -webkit-appearance: none; /* برای حذف استایل پیش‌فرض در iOS */
+    appearance: none; /* خاصیت استاندارد برای سازگاری */
 }
 
 #search-input:focus {
@@ -119,6 +120,8 @@ header {
     -ms-overflow-style: none;
     scrollbar-width: none;
     flex-grow: 1;
+    padding: 0 1rem; /* اضافه کردن پدینگ افقی برای فاصله از لبه‌ها */
+    margin: 0 -1rem; /* جبران پدینگ برای حفظ چینش */
 }
 
 #category-filters-wrapper::-webkit-scrollbar {
@@ -195,6 +198,7 @@ header {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
+    width: 100%; /* اطمینان از عدم سرریز */
     max-width: 1200px;
     margin: 0 auto;
     padding: 1.5rem;
