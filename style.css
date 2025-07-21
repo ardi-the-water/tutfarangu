@@ -437,7 +437,7 @@ footer a:hover {
 /* کدهای واکنش‌گرا برای موبایل */
 @media (max-width: 768px) {
     #controls-container {
-        padding: 0.75rem 0; /* پدینگ افقی حذف شد تا wrapper آن را مدیریت کند */
+        padding: 0.75rem 1rem; /* بازگرداندن پدینگ برای زیبایی */
         transition: transform 0.4s ease, opacity 0.4s ease;
     }
     #controls-container.hidden {
@@ -446,6 +446,10 @@ footer a:hover {
     }
     #controls-inner-wrapper {
         flex-direction: column;
+        width: 100%; /* اطمینان از گرفتن کل عرض */
+    }
+    #category-filters-wrapper {
+        width: 100%; /* اطمینان از گرفتن کل عرض */
     }
     #category-filters {
         padding-bottom: 0.75rem;
@@ -457,6 +461,8 @@ footer a:hover {
     #menu-container {
         padding: 1rem;
         gap: 1rem;
+        /* حالت تک ستونی برای موبایل */
+        grid-template-columns: 1fr;
     }
 
     .filter-btn {
