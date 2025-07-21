@@ -4,20 +4,20 @@
 
 const CAFE_CONFIG = {
     // ═══ اطلاعات کافه ═══
-    name: "نام کافه یا رستوران شما",
-    welcomeMessage: "خوش آمدید!",
-    logo: "", // مسیر لوگو (اختیاری) - مثال: "assets/logo.png"
+    name: "به توت فرنگو خوش آمدید",
+    welcomeMessage: "مدیریت زهرا قزوینی",
+    logo: "https://i.postimg.cc/prC5VKBT/Friendly-hi-cafe-Logo-with-Bright-White-1.png", // مسیر لوگو (اختیاری) - مثال: "assets/logo.png"
     
     // ═══ لینک گوگل شیت ═══
     // راهنما: از گوگل شیت خود، File > Share > Publish to web > CSV را انتخاب کنید
-    googleSheetURL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6PUzQQzzPHFf5-QOpL58JWOFwUTKFzs3vi95mCHJQVB6efWYoMzTCs7wQ9bWRZw7k1OO6_9CuylCl/pub?output=csv',
+    googleSheetURL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQn8Lql_5LgSCksjSG9FGjMKT7d75zwmyDU06KflCTfAoMOQiZm7ovjU-BeB3-ohW9pgIa_3pD9lvfN/pub?output=csv',
     
     // ═══ رنگ‌بندی هوشمند ═══
     // با تغییر رنگ اصلی، رنگ هاور، اکتیو و متن به صورت خودکار تنظیم می‌شود.
     colors: {
-        primary: "#2c3e50",      // رنگ اصلی: هدر، فوتر و دکمه‌های فعال
-        secondary: "#27ae60",    // رنگ ثانویه: قیمت‌ها و جزئیات مهم
-        background: "#f8f9fa",   // پس‌زمینه کلی صفحه
+        primary: "hsla(164, 25%, 45%, 1.00)",      // رنگ اصلی: هدر، فوتر و دکمه‌های فعال
+        secondary: "#19743dff",    // رنگ ثانویه: قیمت‌ها و جزئیات مهم
+        background: "#f8faf9ff",   // پس‌زمینه کلی صفحه
         cardBackground: "rgba(255, 255, 255, 0.9)", // پس‌زمینه کارت‌های منو (برای افکت شیشه‌ای از rgba استفاده کنید)
         text: "#333333",         // رنگ متن اصلی
         lightText: "#7f8c8d"     // رنگ متن‌های فرعی (مانند توضیحات)
@@ -34,14 +34,14 @@ const CAFE_CONFIG = {
         openInNewTab: true, // باز شدن لینک‌ها در تب جدید
         instagram: {
             enabled: true,
-            url: "https://instagram.com/your_username" // لینک اینستاگرام خود را اینجا قرار دهید
+            url: "https://www.instagram.com/zahra_ghazvini20?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" // لینک اینستاگرام خود را اینجا قرار دهید
         },
         telegram: {
-            enabled: true,
+            enabled: false,
             url: "https://t.me/your_channel" // لینک تلگرام خود را اینجا قرار دهید
         },
         whatsapp: {
-            enabled: true,
+            enabled: false,
             url: "https://wa.me/your_number" // لینک واتس‌اپ خود را اینجا قرار دهید
         }
     },
