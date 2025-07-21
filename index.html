@@ -21,8 +21,17 @@
         <input type="text" id="search-input" placeholder="جستجو در منو...">
     </div>
 
-    <div id="category-filters">
+    <div id="controls-container">
+        <div id="controls-inner-wrapper">
+            <div id="category-filters-wrapper">
+                <div id="category-filters"></div>
+            </div>
+            <div id="view-mode-buttons">
+                <button id="grid-view-btn" class="view-btn active" aria-label="نمایش شبکه‌ای"><i class="fas fa-th-large"></i></button>
+                <button id="list-view-btn" class="view-btn" aria-label="نمایش لیستی"><i class="fas fa-bars"></i></button>
+            </div>
         </div>
+    </div>
 
     <main id="menu-container">
         <div class="loading">درحال بارگذاری منو...</div>

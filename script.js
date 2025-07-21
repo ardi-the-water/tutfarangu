@@ -174,7 +174,7 @@ function csvToArray(csv) {
     }).filter(Boolean);
 }
 
-// تابع برای ایجاد دکمه‌های فیلتر و جستجو
+// تابع برای ایجاد دکمه‌های فیلتر و کنترل‌های نمایش
 function setupCategoryFilters() {
     // پیدا کردن دسته‌بندی‌های یکتا
     const categories = ['همه', ...new Set(fullMenuData.map(item => item.Category))];
@@ -200,9 +200,36 @@ function setupCategoryFilters() {
 
     // اضافه کردن event listener برای جستجو
     searchInput.addEventListener('input', filterAndDisplayMenu);
+
+    // منطق دکمه‌های تغییر حالت نمایش با انیمیشن نرم
+    const gridViewBtn = document.getElementById('grid-view-btn');
+    const listViewBtn = document.getElementById('list-view-btn');
+
+    function switchView(view) {
+        const currentHeight = menuContainer.offsetHeight;
+        menuContainer.style.height = `${currentHeight}px`;
+
+        if (view === 'list') {
+            menuContainer.classList.add('list-view');
+            listViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
+        } else {
+            menuContainer.classList.remove('list-view');
+            gridViewBtn.classList.add('active');
+            listViewBtn.classList.remove('active');
+        }
+
+        // برای جلوگیری از پرش، ارتفاع را پس از انیمیشن به حالت خودکار برمی‌گردانیم
+        setTimeout(() => {
+            menuContainer.style.height = '';
+        }, 400); // باید با زمان transition در CSS هماهنگ باشد
+    }
+
+    gridViewBtn.addEventListener('click', () => switchView('grid'));
+    listViewBtn.addEventListener('click', () => switchView('list'));
 }
 
-// تابع جدید برای فیلتر کردن و نمایش منو
+// تابع جدید برای فیلتر کردن و نمایش منو با انیمیشن
 function filterAndDisplayMenu() {
     const searchTerm = searchInput.value.toLowerCase();
     
@@ -221,7 +248,13 @@ function filterAndDisplayMenu() {
         );
     }
 
-    displayMenu(filteredData);
+    // انیمیشن خروج و ورود
+    menuContainer.classList.add('fading-out');
+    
+    setTimeout(() => {
+        displayMenu(filteredData);
+        menuContainer.classList.remove('fading-out');
+    }, 300); // هماهنگ با زمان transition
 }
 
 // تابع برای نمایش آیتم‌های منو در صفحه
@@ -233,63 +266,49 @@ function displayMenu(data) {
         return;
     }
 
-    // گروه‌بندی آیتم‌ها بر اساس دسته‌بندی
-    const groupedMenu = data.reduce((acc, item) => {
-        const category = item.Category;
-        if (!acc[category]) {
-            acc[category] = [];
+    data.forEach(item => {
+        const menuItemDiv = document.createElement('div');
+        menuItemDiv.className = 'menu-item';
+
+        // بررسی وضعیت موجودی
+        if (item.Available && item.Available.toLowerCase() === 'no') {
+            menuItemDiv.classList.add('out-of-stock');
         }
-        acc[category].push(item);
-        return acc;
-    }, {});
+        
+        // ساخت HTML بر اساس تنظیمات
+        let itemHTML = '';
+        
+        // تصویر (در صورت فعال بودن)
+        if (CAFE_CONFIG.showImages && item.ImageURL) {
+            itemHTML += `<img src="${item.ImageURL}" alt="${item.Name}" class="item-image" onerror="this.style.display='none'">`;
+        }
+        
+        // جزئیات آیتم
+        itemHTML += '<div class="item-details">';
+        itemHTML += `<h3 class="item-name">${item.Name}</h3>`;
+        
+        // توضیحات (در صورت وجود و فعال بودن)
+        if (CAFE_CONFIG.showDescription && item.Description) {
+            itemHTML += `<p class="item-description">${item.Description}</p>`;
+        }
+        
+        itemHTML += `<p class="item-price">${formatPrice(item.Price)} ${CAFE_CONFIG.currency}</p>`;
 
-    // ایجاد HTML
-    for (const category in groupedMenu) {
-        const section = document.createElement('div');
-        const title = document.createElement('h2');
-        title.className = 'category-title';
-        title.textContent = category;
-        section.appendChild(title);
+        // اضافه کردن تگ دسته‌بندی
+        if (item.Category) {
+            itemHTML += `<div class="item-category-tag">${item.Category}</div>`;
+        }
 
-        groupedMenu[category].forEach(item => {
-            const menuItemDiv = document.createElement('div');
-            menuItemDiv.className = 'menu-item';
+        itemHTML += '</div>';
 
-            // بررسی وضعیت موجودی
-            if (item.Available && item.Available.toLowerCase() === 'no') {
-                menuItemDiv.classList.add('out-of-stock');
-            }
-            
-            // ساخت HTML بر اساس تنظیمات
-            let itemHTML = '';
-            
-            // تصویر (در صورت فعال بودن)
-            if (CAFE_CONFIG.showImages && item.ImageURL) {
-                itemHTML += `<img src="${item.ImageURL}" alt="${item.Name}" class="item-image" onerror="this.style.display='none'">`;
-            }
-            
-            // جزئیات آیتم
-            itemHTML += '<div class="item-details">';
-            itemHTML += `<h3 class="item-name">${item.Name}</h3>`;
-            
-            // توضیحات (در صورت وجود و فعال بودن)
-            if (CAFE_CONFIG.showDescription && item.Description) {
-                itemHTML += `<p class="item-description">${item.Description}</p>`;
-            }
-            
-            itemHTML += `<p class="item-price">${formatPrice(item.Price)} ${CAFE_CONFIG.currency}</p>`;
-            itemHTML += '</div>';
-
-            // اضافه کردن برچسب (Badge) در صورت وجود
-            if (item.Badge) {
-                itemHTML += `<div class="item-badge">${item.Badge}</div>`;
-            }
-            
-            menuItemDiv.innerHTML = itemHTML;
-            section.appendChild(menuItemDiv);
-        });
-        menuContainer.appendChild(section);
-    }
+        // اضافه کردن برچسب (Badge) در صورت وجود
+        if (item.Badge) {
+            itemHTML += `<div class="item-badge">${item.Badge}</div>`;
+        }
+        
+        menuItemDiv.innerHTML = itemHTML;
+        menuContainer.appendChild(menuItemDiv);
+    });
 }
 
 /**
@@ -308,13 +327,31 @@ function formatPrice(price) {
 // --- منطق دکمه رفتن به بالا ---
 const scrollTopBtn = document.getElementById('scrollTopBtn');
 
-// نمایش دکمه هنگام اسکرول با انیمیشن
+// --- منطق پیشرفته اسکرول ---
+let lastScrollTop = 0;
+const controlsContainer = document.getElementById('controls-container');
+
 window.onscroll = function() {
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    // نمایش/مخفی کردن دکمه "برو به بالا"
+    if (scrollTop > 200) {
         scrollTopBtn.classList.add('visible');
     } else {
         scrollTopBtn.classList.remove('visible');
     }
+
+    // انیمیشن محو شدن کنترل‌ها در موبایل
+    if (window.innerWidth <= 768) {
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // Scroll Down
+            controlsContainer.classList.add('hidden');
+        } else {
+            // Scroll Up
+            controlsContainer.classList.remove('hidden');
+        }
+    }
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
 };
 
 // کلیک برای رفتن به بالا

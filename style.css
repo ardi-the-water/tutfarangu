@@ -24,6 +24,7 @@ body {
     color: var(--text-color);
     margin: 0;
     overflow-x: hidden; /* جلوگیری از اسکرول افقی ناخواسته */
+    font-size: 15px; /* کاهش اندازه فونت پایه */
 }
 
 header {
@@ -52,13 +53,13 @@ header {
 
 #cafe-name {
     margin: 0.5rem 0;
-    font-size: 2rem;
+    font-size: 1.8rem; /* کاهش اندازه */
     font-weight: 700;
 }
 
 #welcome-message {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1rem; /* کاهش اندازه */
     opacity: 0.9;
 }
 
@@ -90,14 +91,70 @@ header {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* استایل بخش فیلترها */
-#category-filters {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+/* استایل بخش کنترل‌ها (فیلتر و حالت نمایش) */
+#controls-container {
     padding: 1rem;
     background-color: #fff;
     border-bottom: 1px solid #dee2e6;
+    /* position: sticky; */ /* حذف حالت چسبان */
+    top: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+}
+
+#controls-inner-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+#category-filters-wrapper {
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    flex-grow: 1;
+}
+
+#category-filters-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+#category-filters {
+    display: flex;
+    justify-content: center; /* تغییر به سنتر */
+    padding-bottom: 0; /* حذف پدینگ پایین */
+}
+
+#view-mode-buttons {
+    display: flex;
+    gap: 0.5rem;
+    padding-right: 1rem; /* فاصله از فیلترها */
+}
+
+.view-btn {
+    background-color: var(--background-color);
+    border: none;
+    border-radius: 12px;
+    padding: 0.6rem 0.9rem;
+    cursor: pointer;
+    color: var(--light-text-color);
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.view-btn:hover {
+    background-color: #e9ecef;
+}
+
+.view-btn.active {
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
 }
 
 .filter-btn {
@@ -131,41 +188,76 @@ header {
 }
 
 #menu-container {
-    max-width: 900px;
-    margin: 0 auto; /* حذف فاصله از بالا */
-    padding: 0 1rem; /* حذف فاصله از بالا */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    transition: all 0.3s ease, opacity 0.3s ease;
 }
 
-.category-title {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    
-    /* --- افکت شیشه‌ای (Glassmorphism) --- */
-    background-color: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    
-    color: var(--text-color);
-    font-size: 1.3rem;
-    font-weight: 700;
-    padding: 1rem;
-    margin: 0 -1rem;
-    padding-right: 2rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+#menu-container.fading-out {
+    opacity: 0;
+    transform: translateY(10px);
 }
+
+/* استایل‌های حالت لیستی */
+#menu-container.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 900px;
+}
+
+#menu-container.list-view .menu-item {
+    flex-direction: row;
+}
+
+#menu-container.list-view .item-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+#menu-container.list-view .item-details {
+    text-align: right;
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#menu-container.list-view .item-name {
+    font-size: 1.1rem;
+}
+
+#menu-container.list-view .item-price {
+    font-size: 1rem;
+}
+
+#menu-container.list-view .item-category-tag {
+    display: none; /* در حالت لیست تگ را مخفی می‌کنیم */
+}
+
+/* .category-title {
+    display: none;
+} */
 
 .menu-item {
-    position: relative; /* برای جای‌گیری درست برچسب */
+    position: relative;
     display: flex;
-    align-items: center;
-    background-color: var(--card-background);
-    border-radius: 12px; /* گوشه‌های گردتر */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* سایه نرم‌تر */
-    margin: 1rem 0;
+    flex-direction: column;
+    /* Glassmorphism Effect */
+    background: rgba(255, 255, 255, 0.5); /* شفافیت بیشتر */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 18px; /* گردی بیشتر */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* سایه نرم‌تر */
+    border: 1px solid rgba(255, 255, 255, 0.3);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* استایل برای آیتم‌های ناموجود */
@@ -192,15 +284,27 @@ header {
 /* استایل برای برچسب ویژه */
 .item-badge {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 10px;
+    left: -30px; /* برای ایجاد افکت چرخیده */
     background-color: var(--secondary-color);
-    color: var(--primary-text-color, #fff); /* استفاده از رنگ متن اصلی در صورت وجود */
-    padding: 5px 12px;
-    border-bottom-right-radius: 12px;
+    color: var(--primary-text-color, #fff);
+    padding: 5px 30px;
     font-size: 0.8rem;
     font-weight: bold;
     z-index: 1;
+    transform: rotate(-45deg);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+#menu-container.list-view .item-badge {
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    border-radius: 0 8px 8px 0;
+    padding: 8px 10px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    left: -1px; /* برای چسبیدن به لبه */
 }
 
 .menu-item:hover {
@@ -209,35 +313,49 @@ header {
 }
 
 .item-image {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    flex-shrink: 0;
+    width: 100%;
+    height: 200px;
+    object-fit: contain; /* نمایش کامل تصویر بدون برش */
+    background-color: #f0f0f0; /* یک پس‌زمینه خنثی برای فضای خالی */
+    padding: 0.5rem; /* کمی فاصله از لبه‌ها */
 }
 
 .item-details {
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
 }
 
 .item-name {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.2rem;
+    margin: 0 0 0.4rem 0;
+    font-size: 1.1rem; /* کاهش اندازه */
+    font-weight: 600; /* کمی نازک‌تر */
     color: var(--text-color);
 }
 
 .item-description {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
+    margin: 0.4rem 0;
+    font-size: 0.85rem; /* کاهش اندازه */
     color: var(--light-text-color);
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 .item-price {
-    margin: 0.5rem 0 0 0;
-    font-size: 1rem;
+    margin: 0.4rem 0 0 0;
+    font-size: 1rem; /* کاهش اندازه */
     color: var(--secondary-color);
-    font-weight: bold;
+    font-weight: 700;
+}
+
+.item-category-tag {
+    align-self: flex-start;
+    background-color: var(--background-color);
+    color: var(--light-text-color);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-top: auto; /* این تگ را به پایین کارت می‌چسباند */
 }
 
 .loading {
@@ -309,40 +427,28 @@ footer a:hover {
 
 /* کدهای واکنش‌گرا برای موبایل */
 @media (max-width: 768px) {
-    .menu-item {
+    #controls-container {
+        padding: 0.75rem;
+        transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    #controls-container.hidden {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    #controls-inner-wrapper {
         flex-direction: column;
-        align-items: stretch;
-        text-align: center;
     }
-
-    .item-image {
-        width: 100%;
-        height: auto; /* ارتفاع خودکار برای حفظ نسبت */
-        max-height: 250px; /* یک حداکثر ارتفاع منطقی */
-        object-fit: contain; /* نمایش کامل عکس بدون برش */
-    }
-
-    .category-title {
-        font-size: 1.1rem;
-        padding: 0.8rem;
-        margin: 0 -1rem;
-        padding-right: 1.5rem;
-    }
-
-    /* --- تغییر اصلی اینجاست --- */
     #category-filters {
-        padding: 0.5rem 1rem; /* کمی پدینگ افقی برای زیبایی */
-        flex-wrap: nowrap; /* جلوگیری از شکستن و رفتن به خط بعد */
-        overflow-x: auto; /* فعال کردن اسکرول افقی */
-        justify-content: flex-start; /* چینش دکمه‌ها از ابتدا */
-        -ms-overflow-style: none;  /* مخفی کردن اسکرول بار در IE و Edge */
-        scrollbar-width: none;  /* مخفی کردن اسکرول بار در Firefox */
+        padding-bottom: 0.75rem;
+        justify-content: flex-start;
     }
-    /* مخفی کردن اسکرول بار در Chrome, Safari و Opera */
-    #category-filters::-webkit-scrollbar {
-        display: none;
+    #view-mode-buttons {
+        padding-right: 0;
     }
-    /* --- پایان تغییر اصلی --- */
+    #menu-container {
+        padding: 1rem;
+        gap: 1rem;
+    }
 
     .filter-btn {
         padding: 8px 15px;
