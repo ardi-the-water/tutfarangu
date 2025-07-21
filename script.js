@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const menuContainer = document.getElementById('menu-container');
 const filtersContainer = document.getElementById('category-filters');
+const searchInput = document.getElementById('search-input');
 
 let fullMenuData = []; // برای نگهداری کل داده‌های منو
+let activeCategory = 'همه'; // برای نگهداری دسته‌بندی فعال
 
 // تابع اعمال تنظیمات از config
 function applyConfigSettings() {
@@ -172,7 +174,7 @@ function csvToArray(csv) {
     }).filter(Boolean);
 }
 
-// تابع برای ایجاد دکمه‌های فیلتر
+// تابع برای ایجاد دکمه‌های فیلتر و جستجو
 function setupCategoryFilters() {
     // پیدا کردن دسته‌بندی‌های یکتا
     const categories = ['همه', ...new Set(fullMenuData.map(item => item.Category))];
@@ -186,19 +188,40 @@ function setupCategoryFilters() {
             btn.classList.add('active');
         }
         btn.addEventListener('click', () => {
+            activeCategory = category; // به‌روزرسانی دسته‌بندی فعال
             // مدیریت کلاس 'active'
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            // فیلتر کردن و نمایش منو
-            const filteredData = category === 'همه'
-                ? fullMenuData
-                : fullMenuData.filter(item => item.Category === category);
-            
-            displayMenu(filteredData);
+            filterAndDisplayMenu();
         });
         filtersContainer.appendChild(btn);
     });
+
+    // اضافه کردن event listener برای جستجو
+    searchInput.addEventListener('input', filterAndDisplayMenu);
+}
+
+// تابع جدید برای فیلتر کردن و نمایش منو
+function filterAndDisplayMenu() {
+    const searchTerm = searchInput.value.toLowerCase();
+    
+    let filteredData = fullMenuData;
+
+    // 1. فیلتر بر اساس دسته‌بندی
+    if (activeCategory !== 'همه') {
+        filteredData = filteredData.filter(item => item.Category === activeCategory);
+    }
+
+    // 2. فیلتر بر اساس جستجو
+    if (searchTerm) {
+        filteredData = filteredData.filter(item => 
+            (item.Name && item.Name.toLowerCase().includes(searchTerm)) ||
+            (item.Description && item.Description.toLowerCase().includes(searchTerm))
+        );
+    }
+
+    displayMenu(filteredData);
 }
 
 // تابع برای نمایش آیتم‌های منو در صفحه
@@ -231,6 +254,11 @@ function displayMenu(data) {
         groupedMenu[category].forEach(item => {
             const menuItemDiv = document.createElement('div');
             menuItemDiv.className = 'menu-item';
+
+            // بررسی وضعیت موجودی
+            if (item.Available && item.Available.toLowerCase() === 'no') {
+                menuItemDiv.classList.add('out-of-stock');
+            }
             
             // ساخت HTML بر اساس تنظیمات
             let itemHTML = '';
@@ -251,6 +279,11 @@ function displayMenu(data) {
             
             itemHTML += `<p class="item-price">${formatPrice(item.Price)} ${CAFE_CONFIG.currency}</p>`;
             itemHTML += '</div>';
+
+            // اضافه کردن برچسب (Badge) در صورت وجود
+            if (item.Badge) {
+                itemHTML += `<div class="item-badge">${item.Badge}</div>`;
+            }
             
             menuItemDiv.innerHTML = itemHTML;
             section.appendChild(menuItemDiv);
@@ -275,12 +308,12 @@ function formatPrice(price) {
 // --- منطق دکمه رفتن به بالا ---
 const scrollTopBtn = document.getElementById('scrollTopBtn');
 
-// نمایش دکمه هنگام اسکرول
+// نمایش دکمه هنگام اسکرول با انیمیشن
 window.onscroll = function() {
-    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-        scrollTopBtn.style.display = "block";
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        scrollTopBtn.classList.add('visible');
     } else {
-        scrollTopBtn.style.display = "none";
+        scrollTopBtn.classList.remove('visible');
     }
 };
 
@@ -290,7 +323,68 @@ scrollTopBtn.addEventListener('click', () => {
 });
 
 
+    // ═══════════════════════════════════════════════════════════════
+    // منطق دکمه‌های شناور شبکه‌های اجتماعی (FAB)
+    // ═══════════════════════════════════════════════════════════════
+    function setupSocialButtons() {
+        const fabContainer = document.getElementById('social-fab-container');
+        if (!fabContainer || !CAFE_CONFIG.socialMedia || !CAFE_CONFIG.socialMedia.enabled) {
+            if (fabContainer) fabContainer.style.display = 'none';
+            return;
+        }
+
+        const mainButton = fabContainer.querySelector('.fab-main-button');
+        const iconsContainer = fabContainer.querySelector('.social-icons');
+        const socialConfig = CAFE_CONFIG.socialMedia;
+
+        const socialPlatforms = [
+            { name: 'instagram', icon: 'fab fa-instagram', config: socialConfig.instagram },
+            { name: 'telegram', icon: 'fab fa-telegram', config: socialConfig.telegram },
+            { name: 'whatsapp', icon: 'fab fa-whatsapp', config: socialConfig.whatsapp }
+        ];
+
+        let hasVisibleIcon = false;
+        iconsContainer.innerHTML = ''; // پاک کردن آیکون‌های قبلی
+
+        socialPlatforms.forEach(platform => {
+            if (platform.config && platform.config.enabled && platform.config.url) {
+                hasVisibleIcon = true;
+                const link = document.createElement('a');
+                link.href = platform.config.url;
+                link.className = `social-icon-${platform.name}`;
+                link.setAttribute('aria-label', platform.name);
+                if (socialConfig.openInNewTab) {
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                }
+                
+                const icon = document.createElement('i');
+                icon.className = platform.icon;
+                link.appendChild(icon);
+                iconsContainer.appendChild(link);
+            }
+        });
+
+        if (!hasVisibleIcon) {
+            fabContainer.style.display = 'none';
+            return;
+        }
+
+        mainButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fabContainer.classList.toggle('open');
+        });
+
+        // بستن منو با کلیک بیرون از آن
+        document.addEventListener('click', (e) => {
+            if (!fabContainer.contains(e.target)) {
+                fabContainer.classList.remove('open');
+            }
+        });
+    }
+
 // اجرای برنامه
 initializeMenu();
+setupSocialButtons(); // فراخوانی تابع جدید
 
 });

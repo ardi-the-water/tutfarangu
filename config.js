@@ -28,6 +28,24 @@ const CAFE_CONFIG = {
     showImages: true,           // نمایش تصاویر آیتم‌ها
     showDescription: true,      // نمایش توضیحات آیتم‌ها
 
+    // ═══ شبکه‌های اجتماعی ═══
+    socialMedia: {
+        enabled: true, // نمایش دکمه اصلی شبکه‌های اجتماعی
+        openInNewTab: true, // باز شدن لینک‌ها در تب جدید
+        instagram: {
+            enabled: true,
+            url: "https://instagram.com/your_username" // لینک اینستاگرام خود را اینجا قرار دهید
+        },
+        telegram: {
+            enabled: true,
+            url: "https://t.me/your_channel" // لینک تلگرام خود را اینجا قرار دهید
+        },
+        whatsapp: {
+            enabled: true,
+            url: "https://wa.me/your_number" // لینک واتس‌اپ خود را اینجا قرار دهید
+        }
+    },
+
     // ═══ تنظیمات فونت ═══
     // برای استفاده از فونت محلی، فایل فونت را در پوشه assets/fonts قرار دهید
     // و نام خانواده و مسیر فایل را در اینجا مشخص کنید.
