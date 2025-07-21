@@ -206,10 +206,7 @@ function setupCategoryFilters() {
     const listViewBtn = document.getElementById('list-view-btn');
 
     function switchView(view) {
-        // انیمیشن خروج سریع
-        menuContainer.classList.add('fading-out');
-
-        setTimeout(() => {
+        animateMenuChange(() => {
             if (view === 'list') {
                 menuContainer.classList.add('list-view');
                 listViewBtn.classList.add('active');
@@ -219,43 +216,85 @@ function setupCategoryFilters() {
                 gridViewBtn.classList.add('active');
                 listViewBtn.classList.remove('active');
             }
-            // انیمیشن ورود
-            menuContainer.classList.remove('fading-out');
-        }, 150); // زمان کوتاه برای تغییر کلاس‌ها
+        });
     }
 
     gridViewBtn.addEventListener('click', () => switchView('grid'));
     listViewBtn.addEventListener('click', () => switchView('list'));
 }
 
-// تابع جدید برای فیلتر کردن و نمایش منو با انیمیشن
+// تابع جدید و بهینه برای فیلتر کردن و نمایش منو
 function filterAndDisplayMenu() {
-    const searchTerm = searchInput.value.toLowerCase();
-    
-    let filteredData = fullMenuData;
+    animateMenuChange(() => {
+        const searchTerm = searchInput.value.toLowerCase();
+        let filteredData = fullMenuData;
 
-    // 1. فیلتر بر اساس دسته‌بندی
-    if (activeCategory !== 'همه') {
-        filteredData = filteredData.filter(item => item.Category === activeCategory);
-    }
+        // 1. فیلتر بر اساس دسته‌بندی
+        if (activeCategory !== 'همه') {
+            filteredData = filteredData.filter(item => item.Category === activeCategory);
+        }
 
-    // 2. فیلتر بر اساس جستجو
-    if (searchTerm) {
-        filteredData = filteredData.filter(item => 
-            (item.Name && item.Name.toLowerCase().includes(searchTerm)) ||
-            (item.Description && item.Description.toLowerCase().includes(searchTerm))
-        );
-    }
+        // 2. فیلتر بر اساس جستجو
+        if (searchTerm) {
+            filteredData = filteredData.filter(item => 
+                (item.Name && item.Name.toLowerCase().includes(searchTerm)) ||
+                (item.Description && item.Description.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        displayMenu(filteredData);
+    });
+}
 
-    // انیمیشن خروج و ورود با requestAnimationFrame برای نرمی بیشتر
-    menuContainer.classList.add('fading-out');
-    
-    setTimeout(() => {
-        window.requestAnimationFrame(() => {
-            displayMenu(filteredData);
-            menuContainer.classList.remove('fading-out');
-        });
-    }, 300); // هماهنگ با زمان transition
+// تابع برای نمایش آیتم‌های منو در صفحه (بهینه‌سازی شده با DocumentFragment)
+// تابع انیمیشن FLIP برای تغییرات نرم در منو
+function animateMenuChange(updateFunction) {
+    const firstRects = new Map();
+    const children = Array.from(menuContainer.children);
+    children.forEach(child => {
+        firstRects.set(child, child.getBoundingClientRect());
+    });
+
+    // اجرای تغییرات (مانند فیلتر کردن یا تغییر ویو)
+    updateFunction();
+
+    const lastRects = new Map();
+    const newChildren = Array.from(menuContainer.children);
+    newChildren.forEach(child => {
+        lastRects.set(child, child.getBoundingClientRect());
+    });
+
+    newChildren.forEach(child => {
+        const first = firstRects.get(child);
+        const last = lastRects.get(child);
+
+        if (first) { // اگر عنصر از قبل وجود داشته
+            const deltaX = first.left - last.left;
+            const deltaY = first.top - last.top;
+            const deltaW = first.width / last.width;
+            const deltaH = first.height / last.height;
+
+            child.style.transition = 'none';
+            child.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${deltaW}, ${deltaH})`;
+            child.style.transformOrigin = 'top left';
+
+            // برای اجرای انیمیشن
+            requestAnimationFrame(() => {
+                child.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+                child.style.transform = '';
+            });
+        } else { // اگر عنصر جدید است
+            child.style.transition = 'none';
+            child.style.opacity = '0';
+            child.style.transform = 'translateY(20px)';
+            
+            requestAnimationFrame(() => {
+                child.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+                child.style.opacity = '1';
+                child.style.transform = '';
+            });
+        }
+    });
 }
 
 // تابع برای نمایش آیتم‌های منو در صفحه (بهینه‌سازی شده با DocumentFragment)

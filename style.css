@@ -25,6 +25,9 @@ body {
     margin: 0;
     overflow-x: hidden; /* جلوگیری از اسکرول افقی ناخواسته */
     font-size: 15px; /* کاهش اندازه فونت پایه */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 header {
@@ -124,8 +127,9 @@ header {
 
 #category-filters {
     display: flex;
-    justify-content: center; /* تغییر به سنتر */
-    padding-bottom: 0; /* حذف پدینگ پایین */
+    justify-content: flex-start; /* برای شروع از ابتدا در حالت اسکرول */
+    padding: 0.5rem 0; /* کمی پدینگ عمودی */
+    gap: 0.5rem; /* فاصله بین دکمه‌ها */
 }
 
 #view-mode-buttons {
@@ -194,7 +198,8 @@ header {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1.5rem;
-    transition: opacity 0.3s ease, transform 0.3s ease; /* بهینه سازی transition */
+    transition: opacity 0.4s ease, transform 0.4s ease; /* کمی زمان بیشتر برای انیمیشن نرم‌تر */
+    flex-grow: 1; /* باعث می‌شود این بخش رشد کرده و فوتر را به پایین هل دهد */
 }
 
 #menu-container.fading-out {
@@ -428,6 +433,9 @@ footer a:hover {
 
 /* کدهای واکنش‌گرا برای موبایل */
 @media (max-width: 768px) {
+    body {
+        width: 100%; /* جلوگیری از هرگونه سرریز افقی */
+    }
     #controls-container {
         padding: 0.75rem;
         transition: transform 0.4s ease, opacity 0.4s ease;
