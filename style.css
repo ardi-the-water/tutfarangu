@@ -120,8 +120,7 @@ header {
     -ms-overflow-style: none;
     scrollbar-width: none;
     flex-grow: 1;
-    padding: 0 1rem; /* اضافه کردن پدینگ افقی برای فاصله از لبه‌ها */
-    margin: 0 -1rem; /* جبران پدینگ برای حفظ چینش */
+    /* حذف پدینگ و مارجین پیچیده قبلی */
 }
 
 #category-filters-wrapper::-webkit-scrollbar {
@@ -198,7 +197,7 @@ header {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
-    width: 100%; /* اطمینان از عدم سرریز */
+    /* width: 100%; */ /* حذف شد تا به max-width اجازه کار دهد */
     max-width: 1200px;
     margin: 0 auto;
     padding: 1.5rem;
@@ -437,11 +436,8 @@ footer a:hover {
 
 /* کدهای واکنش‌گرا برای موبایل */
 @media (max-width: 768px) {
-    body {
-        width: 100%; /* جلوگیری از هرگونه سرریز افقی */
-    }
     #controls-container {
-        padding: 0.75rem;
+        padding: 0.75rem 0; /* پدینگ افقی حذف شد تا wrapper آن را مدیریت کند */
         transition: transform 0.4s ease, opacity 0.4s ease;
     }
     #controls-container.hidden {
