@@ -206,23 +206,22 @@ function setupCategoryFilters() {
     const listViewBtn = document.getElementById('list-view-btn');
 
     function switchView(view) {
-        const currentHeight = menuContainer.offsetHeight;
-        menuContainer.style.height = `${currentHeight}px`;
+        // انیمیشن خروج سریع
+        menuContainer.classList.add('fading-out');
 
-        if (view === 'list') {
-            menuContainer.classList.add('list-view');
-            listViewBtn.classList.add('active');
-            gridViewBtn.classList.remove('active');
-        } else {
-            menuContainer.classList.remove('list-view');
-            gridViewBtn.classList.add('active');
-            listViewBtn.classList.remove('active');
-        }
-
-        // برای جلوگیری از پرش، ارتفاع را پس از انیمیشن به حالت خودکار برمی‌گردانیم
         setTimeout(() => {
-            menuContainer.style.height = '';
-        }, 400); // باید با زمان transition در CSS هماهنگ باشد
+            if (view === 'list') {
+                menuContainer.classList.add('list-view');
+                listViewBtn.classList.add('active');
+                gridViewBtn.classList.remove('active');
+            } else {
+                menuContainer.classList.remove('list-view');
+                gridViewBtn.classList.add('active');
+                listViewBtn.classList.remove('active');
+            }
+            // انیمیشن ورود
+            menuContainer.classList.remove('fading-out');
+        }, 150); // زمان کوتاه برای تغییر کلاس‌ها
     }
 
     gridViewBtn.addEventListener('click', () => switchView('grid'));
@@ -248,16 +247,18 @@ function filterAndDisplayMenu() {
         );
     }
 
-    // انیمیشن خروج و ورود
+    // انیمیشن خروج و ورود با requestAnimationFrame برای نرمی بیشتر
     menuContainer.classList.add('fading-out');
     
     setTimeout(() => {
-        displayMenu(filteredData);
-        menuContainer.classList.remove('fading-out');
+        window.requestAnimationFrame(() => {
+            displayMenu(filteredData);
+            menuContainer.classList.remove('fading-out');
+        });
     }, 300); // هماهنگ با زمان transition
 }
 
-// تابع برای نمایش آیتم‌های منو در صفحه
+// تابع برای نمایش آیتم‌های منو در صفحه (بهینه‌سازی شده با DocumentFragment)
 function displayMenu(data) {
     menuContainer.innerHTML = ''; // پاک کردن محتوای فعلی
     
@@ -265,6 +266,8 @@ function displayMenu(data) {
         menuContainer.innerHTML = '<div class="loading">آیتمی برای نمایش یافت نشد.</div>';
         return;
     }
+
+    const fragment = document.createDocumentFragment();
 
     data.forEach(item => {
         const menuItemDiv = document.createElement('div');
@@ -280,7 +283,7 @@ function displayMenu(data) {
         
         // تصویر (در صورت فعال بودن)
         if (CAFE_CONFIG.showImages && item.ImageURL) {
-            itemHTML += `<img src="${item.ImageURL}" alt="${item.Name}" class="item-image" onerror="this.style.display='none'">`;
+            itemHTML += `<img src="${item.ImageURL}" alt="${item.Name}" class="item-image" loading="lazy" onerror="this.style.display='none'">`;
         }
         
         // جزئیات آیتم
@@ -307,8 +310,10 @@ function displayMenu(data) {
         }
         
         menuItemDiv.innerHTML = itemHTML;
-        menuContainer.appendChild(menuItemDiv);
+        fragment.appendChild(menuItemDiv);
     });
+
+    menuContainer.appendChild(fragment); // اضافه کردن یک‌باره به DOM
 }
 
 /**
@@ -327,11 +332,12 @@ function formatPrice(price) {
 // --- منطق دکمه رفتن به بالا ---
 const scrollTopBtn = document.getElementById('scrollTopBtn');
 
-// --- منطق پیشرفته اسکرول ---
-let lastScrollTop = 0;
+// --- منطق پیشرفته و بهینه اسکرول ---
 const controlsContainer = document.getElementById('controls-container');
+let lastScrollTop = 0;
+let isThrottled = false;
 
-window.onscroll = function() {
+function handleScroll() {
     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
     // نمایش/مخفی کردن دکمه "برو به بالا"
@@ -351,8 +357,16 @@ window.onscroll = function() {
             controlsContainer.classList.remove('hidden');
         }
     }
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
-};
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    isThrottled = false;
+}
+
+window.addEventListener('scroll', () => {
+    if (!isThrottled) {
+        window.requestAnimationFrame(handleScroll);
+        isThrottled = true;
+    }
+});
 
 // کلیک برای رفتن به بالا
 scrollTopBtn.addEventListener('click', () => {

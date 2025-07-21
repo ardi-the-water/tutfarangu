@@ -194,12 +194,12 @@ header {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1.5rem;
-    transition: all 0.3s ease, opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* بهینه سازی transition */
 }
 
 #menu-container.fading-out {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px); /* افزایش جزئی برای تاکید بیشتر */
 }
 
 /* استایل‌های حالت لیستی */
@@ -257,7 +257,8 @@ header {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* سایه نرم‌تر */
     border: 1px solid rgba(255, 255, 255, 0.3);
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* انیمیشن بهینه‌تر */
+    will-change: transform, box-shadow; /* اشاره به مرورگر برای بهینه‌سازی */
 }
 
 /* استایل برای آیتم‌های ناموجود */
