@@ -21,6 +21,7 @@
 body {
     font-family: sans-serif; /* این توسط جاوااسکریپت بازنویسی می‌شود */
     background-color: var(--background-color);
+    background-image: url('https://www.transparenttextures.com/patterns/fabric-of-squares.png');
     color: var(--text-color);
     margin: 0;
     overflow-x: hidden; /* جلوگیری از اسکرول افقی ناخواسته */
@@ -31,7 +32,7 @@ body {
 }
 
 header {
-    background-color: var(--primary-color);
+    background: linear-gradient(to right, var(--primary-color), var(--primary-hover-color));
     color: var(--primary-text-color);
     text-align: center;
     padding: 1rem 0;
@@ -82,9 +83,10 @@ header {
     font-family: inherit;
     font-size: 1rem;
     border-radius: 25px;
-    border: 1px solid #ced4da;
+    border: 1px solid transparent;
+    background-color: rgba(255, 255, 255, 0.5);
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
     -webkit-appearance: none; /* برای حذف استایل پیش‌فرض در iOS */
     appearance: none; /* خاصیت استاندارد برای سازگاری */
 }
@@ -92,6 +94,7 @@ header {
 #search-input:focus {
     outline: none;
     border-color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
@@ -164,9 +167,9 @@ header {
 }
 
 .filter-btn {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.5);
     color: #495057;
-    border: 1px solid #ced4da;
+    border: 1px solid transparent;
     border-radius: 20px;
     padding: 10px 20px;
     margin: 5px;
@@ -258,12 +261,12 @@ header {
     display: flex;
     flex-direction: column;
     /* Glassmorphism Effect */
-    background: rgba(255, 255, 255, 0.5); /* شفافیت بیشتر */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 18px; /* گردی بیشتر */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* سایه نرم‌تر */
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.6); /* شفافیت بیشتر */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px; /* گردی بیشتر */
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 ); /* سایه نرم‌تر */
+    border: 1px solid rgba(255, 255, 255, 0.18);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* انیمیشن بهینه‌تر */
     will-change: transform, box-shadow; /* اشاره به مرورگر برای بهینه‌سازی */
